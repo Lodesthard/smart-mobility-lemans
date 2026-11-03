@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Smart Mobility Le Mans — SETRAM network status</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+  .kpis { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+  .kpi { flex: 1; min-width: 180px; padding: 0.8rem 1rem; border: 1px solid #ccc; border-radius: 8px; }
+  .kpi .value { font-size: 1.6rem; font-weight: bold; color: #0d7c9e; }
+  .kpi .label { font-size: 0.8rem; color: #666; }
+  #alerts { padding: 0.8rem 1rem; border: 2px solid #c46e0a; border-radius: 8px; background: #faf3e8; }
+  #alerts.none { border-color: #2c9c4a; background: #f0f8f2; }
+  canvas { margin-top: 2rem; }
+  #updated { color: #666; font-size: 0.85rem; }
+  h2 { margin-top: 3rem; border-top: 1px solid #ddd; padding-top: 1.5rem; }
+  .caveat { padding: 0.6rem 1rem; border-left: 4px solid #c46e0a; background: #faf3e8; font-size: 0.9rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin-top: 1rem; }
+  th, td { padding: 0.35rem 0.5rem; border-bottom: 1px solid #eee; text-align: right; }
+  th:nth-child(2), td:nth-child(2) { text-align: left; }
+  tr.flag td { background: #fdf0e6; }
+</style>
+</head>
+<body>
+  <h1>SETRAM network — current status</h1>
+  <p>Real-time delay and disruption snapshot for Le Mans Métropole's bus and tram network.</p>
+  <div class="kpis" id="kpis">Loading...</div>
+  <div id="alerts">Loading alerts...</div>
+  <canvas id="delayChart" height="320"></canvas>
+  <p id="updated"></p>
+
+  <h2>Scheduled supply vs. population, by commune</h2>
+  <p>Metric: <strong>scheduled stop-visits per 1,000 residents on a representative weekday</strong>
+     (every scheduled bus/tram passage at a stop counts as one visit).</p>
+  <div class="caveat" id="supplyCaveat">
+    Population is a proxy for demand, not real ridership. Stops are attributed to the
+    <em>nearest commune center</em>, not to real commune boundaries — Le Mans neighborhoods
+    near a suburb (e.g. the University campus) are counted in that suburb, which inflates
+    small neighboring communes and deflates Le Mans itself.
+  </div>
+  <canvas id="supplyChart" height="360"></canvas>
+  <table id="supplyTable"></table>
+
+<script>
+fetch('data/current_state.json')
+  .then(r => r.json())
+  .then(data => {
+    const routes = data.routes || [];
+
+    document.getElementById('kpis').innerHTML = `
+      <div class="kpi"><div class="value">${data.network_avg_delay_s.toFixed(1)}s</div><div class="label">Network average delay</div></div>
+      <div class="kpi"><div class="value">${data.n_routes_reporting}</div><div class="label">Routes reporting</div></div>
+      <div class="kpi"><div class="value">${data.alerts.length}</div><div class="label">Active alerts</div></div>
+    `;
+
+    document.getElementById('updated').textContent = `Data last updated ${data.generated_at}`;
+
+    const alertsEl = document.getElementById('alerts');
+    if (!data.alerts || data.alerts.length === 0) {
+      alertsEl.classList.add('none');
+      alertsEl.innerHTML = '<strong>No active alerts.</strong>';
+    } else {
+      alertsEl.innerHTML = '<strong>Active alerts:</strong><ul>' +
+        data.alerts.map(a => `<li>[Route ${a.routes || '?'}] ${a.header}</li>`).join('') +
+        '</ul>';
+    }
+
+    if (routes.length === 0) {
+      document.getElementById('delayChart').outerHTML =
+        '<p>No route data yet -- trigger the collect_snapshot workflow from the Actions tab.</p>';
+      return;
+    }
+
+    function scoreToColor(t) {
+      const clamped = Math.max(0, Math.min(1, t));
+      const hue = 120 * clamped; // 0 = red (worst), 120 = green (best)
+      return `hsl(${hue.toFixed(0)}, 70%, 45%)`;
+    }
+    function normalizeForColor(values, invert) {
+      const lo = Math.min(...values);
+      const hi = Math.max(...values);
+      if (hi === lo) return values.map(() => 0.5);
+      const scaled = values.map(v => (v - lo) / (hi - lo));
+      return invert ? scaled.map(s => 1 - s) : scaled;
+    }
+    // lower delay = greener, higher delay = redder
+    const colorNorm = normalizeForColor(routes.map(r => r.avg_delay_s), true);
+    const barColors = colorNorm.map(t => scoreToColor(t));
+
+    new Chart(document.getElementById('delayChart'), {
+      type: 'bar',
+      data: {
+        labels: routes.map(r => r.route_name),
+        datasets: [{
+          label: 'Average delay (s)',
+          data: routes.map(r => r.avg_delay_s),
+          backgroundColor: barColors
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Average delay by route, this snapshot (green = on time/early, red = most delayed)' },
+          tooltip: {
+            callbacks: {
+              title: (items) => {
+                const r = routes[items[0].dataIndex];
+                return `Route ${r.route_name}`;
+              },
+              label: (item) => {
+                const r = routes[item.dataIndex];
+                return [`Avg delay: ${r.avg_delay_s}s`, `Trips observed: ${r.n_trips_observed}`, `Skipped stops: ${r.n_skipped}`];
+              }
+            }
+          }
+        },
+        scales: { y: { title: { display: true, text: 'Average delay (seconds)' } } }
+      }
+    });
+  })
+  .catch(err => {
+    document.getElementById('kpis').innerHTML =
+      '<p>Could not load network status (' + err + '). Check that ' +
+      '<code>docs/data/current_state.json</code> exists in the repo.</p>';
+  });
+
+fetch('data/commune_supply.json')
+  .then(r => r.json())
+  .then(data => {
+    const communes = data.communes || [];
+    const caveat = document.getElementById('supplyCaveat');
+    caveat.innerHTML += `<br>Schedule used: ${data.representative_date}. Static feed valid until ${data.feed_valid_until}.`;
+    if (data.feed_valid_until < new Date().toISOString().slice(0, 10)) {
+      caveat.innerHTML += ' <strong>The static feed has expired — supply figures describe the previous timetable.</strong>';
+    }
+
+    // A commune whose busiest stop carries >= 40% of its visits rests on a single
+    // stop (often a terminus): its score says little about coverage for residents.
+    const isFlagged = c => c.top_stop_share >= 0.4;
+
+    new Chart(document.getElementById('supplyChart'), {
+      type: 'bar',
+      data: {
+        labels: communes.map(c => c.commune),
+        datasets: [{
+          label: 'Stop-visits per 1,000 residents',
+          data: communes.map(c => c.visits_per_1000_residents),
+          backgroundColor: communes.map(c => isFlagged(c) ? '#c46e0a' : '#0d7c9e')
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Scheduled stop-visits per 1,000 residents (orange = score driven by one stop)' },
+          tooltip: {
+            callbacks: {
+              label: (item) => {
+                const c = communes[item.dataIndex];
+                return [`${c.visits_per_1000_residents} visits / 1,000 residents`,
+                        `Population: ${c.population.toLocaleString()}`,
+                        `Stops: ${c.n_stops}, daily visits: ${c.daily_stop_visits}`,
+                        `Busiest stop share: ${Math.round(c.top_stop_share * 100)}%`];
+              }
+            }
+          }
+        },
+        scales: { x: { title: { display: true, text: 'Stop-visits per 1,000 residents' } } }
+      }
+    });
+
+    document.getElementById('supplyTable').innerHTML =
+      '<tr><th>#</th><th>Commune</th><th>Population</th><th>Stops</th><th>Daily stop-visits</th>' +
+      '<th>Visits / 1,000 res.</th><th>Busiest stop share</th></tr>' +
+      communes.map(c => `<tr class="${isFlagged(c) ? 'flag' : ''}"><td>${c.rank}</td><td>${c.commune}</td>` +
+        `<td>${c.population.toLocaleString()}</td><td>${c.n_stops}</td><td>${c.daily_stop_visits}</td>` +
+        `<td>${c.visits_per_1000_residents}</td><td>${Math.round(c.top_stop_share * 100)}%</td></tr>`).join('');
+  })
+  .catch(err => {
+    document.getElementById('supplyChart').outerHTML =
+      '<p>Could not load commune supply (' + err + '). Run the "Build static reference" workflow.</p>';
+  });
+</script>
+</body>
+</html>

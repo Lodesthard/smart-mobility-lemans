@@ -1,0 +1,227 @@
+{
+  "representative_date": "2026-09-01",
+  "feed_valid_until": "2026-10-30",
+  "metric": "Scheduled stop-visits per 1,000 residents on a representative weekday",
+  "communes": [
+    {
+      "rank": 1,
+      "commune": "La-Chapelle-Saint-Aubin",
+      "population": 2319,
+      "n_stops": 75,
+      "daily_stop_visits": 3729,
+      "busiest_stop_visits": 163,
+      "visits_per_1000_residents": 1608.0,
+      "stops_per_1000_residents": 32.34,
+      "top_stop_share": 0.04
+    },
+    {
+      "rank": 2,
+      "commune": "Coulaines",
+      "population": 8226,
+      "n_stops": 120,
+      "daily_stop_visits": 7252,
+      "busiest_stop_visits": 119,
+      "visits_per_1000_residents": 881.6,
+      "stops_per_1000_residents": 14.59,
+      "top_stop_share": 0.02
+    },
+    {
+      "rank": 3,
+      "commune": "Rouillon",
+      "population": 2666,
+      "n_stops": 46,
+      "daily_stop_visits": 1949,
+      "busiest_stop_visits": 194,
+      "visits_per_1000_residents": 731.1,
+      "stops_per_1000_residents": 17.25,
+      "top_stop_share": 0.1
+    },
+    {
+      "rank": 4,
+      "commune": "Allonnes",
+      "population": 10846,
+      "n_stops": 96,
+      "daily_stop_visits": 4083,
+      "busiest_stop_visits": 161,
+      "visits_per_1000_residents": 376.5,
+      "stops_per_1000_residents": 8.85,
+      "top_stop_share": 0.04
+    },
+    {
+      "rank": 5,
+      "commune": "Ruaudin",
+      "population": 3542,
+      "n_stops": 29,
+      "daily_stop_visits": 1244,
+      "busiest_stop_visits": 163,
+      "visits_per_1000_residents": 351.2,
+      "stops_per_1000_residents": 8.19,
+      "top_stop_share": 0.13
+    },
+    {
+      "rank": 6,
+      "commune": "Arnage",
+      "population": 5548,
+      "n_stops": 37,
+      "daily_stop_visits": 1664,
+      "busiest_stop_visits": 193,
+      "visits_per_1000_residents": 299.9,
+      "stops_per_1000_residents": 6.67,
+      "top_stop_share": 0.12
+    },
+    {
+      "rank": 7,
+      "commune": "Le Mans",
+      "population": 148876,
+      "n_stops": 389,
+      "daily_stop_visits": 32171,
+      "busiest_stop_visits": 282,
+      "visits_per_1000_residents": 216.1,
+      "stops_per_1000_residents": 2.61,
+      "top_stop_share": 0.01
+    },
+    {
+      "rank": 8,
+      "commune": "Saint-Saturnin",
+      "population": 2864,
+      "n_stops": 23,
+      "daily_stop_visits": 530,
+      "busiest_stop_visits": 57,
+      "visits_per_1000_residents": 185.1,
+      "stops_per_1000_residents": 8.03,
+      "top_stop_share": 0.11
+    },
+    {
+      "rank": 9,
+      "commune": "La-Milesse",
+      "population": 2650,
+      "n_stops": 17,
+      "daily_stop_visits": 483,
+      "busiest_stop_visits": 90,
+      "visits_per_1000_residents": 182.3,
+      "stops_per_1000_residents": 6.42,
+      "top_stop_share": 0.19
+    },
+    {
+      "rank": 10,
+      "commune": "Yvre-l-Eveque",
+      "population": 4269,
+      "n_stops": 40,
+      "daily_stop_visits": 778,
+      "busiest_stop_visits": 51,
+      "visits_per_1000_residents": 182.2,
+      "stops_per_1000_residents": 9.37,
+      "top_stop_share": 0.07
+    },
+    {
+      "rank": 11,
+      "commune": "Sarge-les-le-Mans",
+      "population": 3941,
+      "n_stops": 19,
+      "daily_stop_visits": 669,
+      "busiest_stop_visits": 46,
+      "visits_per_1000_residents": 169.8,
+      "stops_per_1000_residents": 4.82,
+      "top_stop_share": 0.07
+    },
+    {
+      "rank": 12,
+      "commune": "Champagne",
+      "population": 3728,
+      "n_stops": 20,
+      "daily_stop_visits": 462,
+      "busiest_stop_visits": 29,
+      "visits_per_1000_residents": 123.9,
+      "stops_per_1000_residents": 5.36,
+      "top_stop_share": 0.06
+    },
+    {
+      "rank": 13,
+      "commune": "Mulsanne",
+      "population": 5352,
+      "n_stops": 19,
+      "daily_stop_visits": 605,
+      "busiest_stop_visits": 48,
+      "visits_per_1000_residents": 113.0,
+      "stops_per_1000_residents": 3.55,
+      "top_stop_share": 0.08
+    },
+    {
+      "rank": 14,
+      "commune": "Aigne",
+      "population": 1724,
+      "n_stops": 17,
+      "daily_stop_visits": 182,
+      "busiest_stop_visits": 27,
+      "visits_per_1000_residents": 105.6,
+      "stops_per_1000_residents": 9.86,
+      "top_stop_share": 0.15
+    },
+    {
+      "rank": 15,
+      "commune": "Pruille-le-Chetif",
+      "population": 1357,
+      "n_stops": 14,
+      "daily_stop_visits": 106,
+      "busiest_stop_visits": 15,
+      "visits_per_1000_residents": 78.1,
+      "stops_per_1000_residents": 10.32,
+      "top_stop_share": 0.14
+    },
+    {
+      "rank": 16,
+      "commune": "Fay",
+      "population": 770,
+      "n_stops": 6,
+      "daily_stop_visits": 57,
+      "busiest_stop_visits": 25,
+      "visits_per_1000_residents": 74.0,
+      "stops_per_1000_residents": 7.79,
+      "top_stop_share": 0.44
+    },
+    {
+      "rank": 17,
+      "commune": "Saint-Georges-du-Bois",
+      "population": 2308,
+      "n_stops": 22,
+      "daily_stop_visits": 136,
+      "busiest_stop_visits": 29,
+      "visits_per_1000_residents": 58.9,
+      "stops_per_1000_residents": 9.53,
+      "top_stop_share": 0.21
+    },
+    {
+      "rank": 18,
+      "commune": "Trange",
+      "population": 1678,
+      "n_stops": 10,
+      "daily_stop_visits": 97,
+      "busiest_stop_visits": 16,
+      "visits_per_1000_residents": 57.8,
+      "stops_per_1000_residents": 5.96,
+      "top_stop_share": 0.16
+    },
+    {
+      "rank": 19,
+      "commune": "Fatines",
+      "population": 937,
+      "n_stops": 8,
+      "daily_stop_visits": 52,
+      "busiest_stop_visits": 25,
+      "visits_per_1000_residents": 55.5,
+      "stops_per_1000_residents": 8.54,
+      "top_stop_share": 0.48
+    },
+    {
+      "rank": 20,
+      "commune": "Chaufour-Notre-Dame",
+      "population": 1187,
+      "n_stops": 4,
+      "daily_stop_visits": 64,
+      "busiest_stop_visits": 29,
+      "visits_per_1000_residents": 53.9,
+      "stops_per_1000_residents": 3.37,
+      "top_stop_share": 0.45
+    }
+  ]
+}
